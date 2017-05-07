@@ -112,8 +112,8 @@ function anchorTemplate(id, options) {
     return options.anchorTemplate(id);
   }
 
-  return `<a href="#${id}" name="${id}" class="anchor">
-  <span class="anchor-target" id="${id}"></span>
-  <span class="glyphicon glyphicon-link"></span>
-</a>`;
+  return '<a href="#' + id + '" name="' + id + '" class="anchor">\n'
+  + '  <span class="anchor-target" id="' + id + '"></span>\n'
+  + '  <span class="glyphicon glyphicon-link"></span>\n'
+  + '</a>';
 }
