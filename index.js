@@ -5,7 +5,7 @@ var extend = require('extend-shallow');
 var slugify = require('markdown-slug');
 var escape = require('escape-html');
 
-module.exports = function (str, options) {
+module.exports = function(str, options) {
   if (typeof str !== 'string') {
     throw new TypeError('expected a string');
   }
@@ -40,9 +40,7 @@ module.exports = function (str, options) {
     return findLocation(loc.children, depth - 1);
   }
 
-
-
-  headings.map(function (i, ele) {
+  headings.map(function(i, ele) {
     var $ele = $(ele);
     var text = $ele.text().trim();
     if (!text) return;
@@ -64,18 +62,18 @@ module.exports = function (str, options) {
    */
 
   function buildHTML(navigation, first, sParentLink) {
-    return '<ul class="nav' + (first ? ' sidenav' : '') + '">' + navigation.map(function (loc) {
+    return '<ul class="nav' + (first ? ' sidenav' : '') + '">' + navigation.map(function(loc) {
 
       if (!loc || !loc.link) return '';
       loc.link = (opts.parentLink && sParentLink ? sParentLink + '-' : '') + loc.link;
       loc.$ele.attr('id', loc.link);
 
-      return '<li><a href="#' + loc.link + '">' + loc.text + '</a>' + (loc.children ? buildHTML(loc.children, false, loc.link) : '') + '</li>';
+      return '<li><a href="#' + loc.link + '">' + escape(loc.text) + '</a>' + (loc.children ? buildHTML(loc.children, false, loc.link) : '') + '</li>';
     }).join('\n') + '</ul>';
   }
 
   function addID(navigation) {
-    navigation.forEach(function (loc) {
+    navigation.forEach(function(loc) {
       if (!loc || !loc.link) return;
       loc.$ele.attr('id', loc.link);
       if (loc.children) addID(loc.children);
@@ -90,7 +88,7 @@ module.exports = function (str, options) {
     $(opts.id).append(buildHTML(navigation, true));
   }
 
-  headings.map(function (i, ele) {
+  headings.map(function(i, ele) {
     var $ele = $(ele);
     var id = $ele.attr('id');
 
