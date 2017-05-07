@@ -80,7 +80,7 @@ describe('html-toc', function() {
     it('should support custom slugger', function() {
       var actual = toc(fixture('options-slugger'), {
         slugger: function(text) {
-          const re = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~\s]/g;
+          var re = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~\s]/g;
           return text.trim().replace(re, '');
         }
       });
