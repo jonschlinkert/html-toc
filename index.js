@@ -23,7 +23,9 @@ module.exports = function(str, options) {
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
-  var base = +headings.first()[0].name.slice(1);
+  var firstHeading = headings.first()[0];
+  if (!firstHeading) return str;
+  var base = +firstHeading.name.slice(1);
   var navigation = [];
   var slugs = {};
 
