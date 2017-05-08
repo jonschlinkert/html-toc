@@ -23,11 +23,12 @@ module.exports = function(str, options) {
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
+  var base = +headings.first()[0].name.slice(1);
   var navigation = [];
   var slugs = {};
 
   function findLocation(navigation, depth) {
-    if (depth <= 1) {
+    if (depth <= 0) {
       return navigation;
     }
     var loc = navigation[navigation.length - 1];
@@ -44,12 +45,11 @@ module.exports = function(str, options) {
     var $ele = $(ele);
     var text = $ele.text().trim();
     if (!text) return;
-
     var slug = opts.slugger(text, { cache: slugs });
     var node = {
       text: text,
       link: slug,
-      level: +ele.name.slice(1) - 1,
+      level: +ele.name.slice(1) - base,
       $ele: $ele
     };
 
