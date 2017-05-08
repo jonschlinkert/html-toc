@@ -43,7 +43,7 @@ describe('html-toc', function() {
       assert.equal(toc(fixture('duplicate-names')), expected('duplicate-names'));
     });
 
-    it('should support base heading', () => {
+    it('should support base heading', function() {
       var actual = toc(fixture('base'), { selectors: 'h4, h3' });
       assert.equal(actual, expected('base'));
     });
