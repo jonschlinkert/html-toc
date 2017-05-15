@@ -3,27 +3,39 @@
 var cheerio = require('cheerio');
 var extend = require('extend-shallow');
 var slugify = require('markdown-slug');
+var escape = require('escape-html');
 
 module.exports = function(str, options) {
   if (typeof str !== 'string') {
     throw new TypeError('expected a string');
   }
 
-  var opts = extend({selectors: 'h1,h2', id: '#toc'}, options);
+  var opts = extend({
+    selectors: 'h1,h2',
+    id: '#toc',
+    slugger: slugify,
+    minLength: 0,
+    header: '',
+    addID: false,
+    parentLink: true
+  }, options);
   var $ = opts.$ || cheerio.load(str);
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
+  var firstHeading = headings.first()[0];
+  if (!firstHeading) return str;
+  var base = +firstHeading.name.slice(1);
   var navigation = [];
   var slugs = {};
 
   function findLocation(navigation, depth) {
-    if (depth <= 1) {
+    if (depth <= 0) {
       return navigation;
     }
     var loc = navigation[navigation.length - 1];
     if (!loc) {
-      loc = {children: []};
+      loc = { children: [] };
       navigation.push(loc);
     } else if (!loc.children) {
       loc.children = [];
@@ -35,12 +47,11 @@ module.exports = function(str, options) {
     var $ele = $(ele);
     var text = $ele.text().trim();
     if (!text) return;
-
-    var slug = slugify(text, {cache: slugs});
+    var slug = opts.slugger(text, { cache: slugs });
     var node = {
       text: text,
       link: slug,
-      level: +ele.name.slice(1) - 1,
+      level: +ele.name.slice(1) - base,
       $ele: $ele
     };
 
@@ -56,14 +67,28 @@ module.exports = function(str, options) {
     return '<ul class="nav' + (first ? ' sidenav' : '') + '">' + navigation.map(function(loc) {
 
       if (!loc || !loc.link) return '';
-      loc.link = (sParentLink ? sParentLink + '-' : '') + loc.link;
+      loc.link = (opts.parentLink && sParentLink ? sParentLink + '-' : '') + loc.link;
       loc.$ele.attr('id', loc.link);
 
-      return '<li><a href="#' + loc.link + '">' + loc.text + '</a>' + (loc.children ? buildHTML(loc.children, false, loc.link) : '') + '</li>';
+      return '<li><a href="#' + loc.link + '">' + escape(loc.text) + '</a>' + (loc.children ? buildHTML(loc.children, false, loc.link) : '') + '</li>';
     }).join('\n') + '</ul>';
   }
 
-  $(opts.id).append(buildHTML(navigation, true));
+  function addID(navigation) {
+    navigation.forEach(function(loc) {
+      if (!loc || !loc.link) return;
+      loc.$ele.attr('id', loc.link);
+      if (loc.children) addID(loc.children);
+    });
+  }
+
+  if (headings.length < opts.minLength) {
+    if (opts.addID) addID(navigation);
+    else return $.html();
+  } else {
+    $(opts.id).append(opts.header);
+    $(opts.id).append(buildHTML(navigation, true));
+  }
 
   headings.map(function(i, ele) {
     var $ele = $(ele);
@@ -89,8 +114,8 @@ function anchorTemplate(id, options) {
     return options.anchorTemplate(id);
   }
 
-  return `<a href="#${id}" name="${id}" class="anchor">
-  <span class="anchor-target" id="${id}"></span>
-  <span class="glyphicon glyphicon-link"></span>
-</a>`;
+  return '<a href="#' + id + '" name="' + id + '" class="anchor">\n'
+  + '  <span class="anchor-target" id="' + id + '"></span>\n'
+  + '  <span class="glyphicon glyphicon-link"></span>\n'
+  + '</a>';
 }

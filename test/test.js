@@ -42,6 +42,11 @@ describe('html-toc', function() {
     it('should support duplicate headings', function() {
       assert.equal(toc(fixture('duplicate-names')), expected('duplicate-names'));
     });
+
+    it('should support base heading', function() {
+      var actual = toc(fixture('base'), { selectors: 'h4, h3' });
+      assert.equal(actual, expected('base'));
+    });
   });
 
   describe('options', function() {
@@ -67,6 +72,47 @@ describe('html-toc', function() {
         }
       });
       assert.equal(actual, expected('options-anchorTemplate'));
+    });
+
+    it('should not prefix headings\' id attribute with parentLink when options.parentLink is false', function() {
+      var actual = toc(fixture('options-parentLink'), {
+        parentLink: false,
+        selectors: 'h2, h3'
+      });
+      assert.equal(actual, expected('options-parentLink'));
+    });
+
+    it('should support custom slugger', function() {
+      var actual = toc(fixture('options-slugger'), {
+        slugger: function(text) {
+          var re = /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~\s]/g;
+          return text.trim().replace(re, '');
+        }
+      });
+      assert.equal(actual, expected('options-slugger'));
+    });
+
+    it('should inject options.header', function() {
+      var actual = toc(fixture('options-header'), {
+        header: '<h2>Contents</h2>'
+      });
+      assert.equal(actual, expected('options-header'));
+    });
+
+    it('should do nothing if headings is fewer than options.minLength', function() {
+      var origin = fixture('options-minLength');
+      var actual = toc(origin, {
+        minLength: 2
+      });
+      assert.equal(actual, origin);
+    });
+
+    it('should add id attribute to headings even if headings are fewer than options.minLength when options.addID is true', function() {
+      var actual = toc(fixture('options-addID'), {
+        minLength: 2,
+        addID: true
+      });
+      assert.equal(actual, expected('options-addID'));
     });
   });
 });
