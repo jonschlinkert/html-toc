@@ -1,7 +1,7 @@
 {
   "name": "html-toc",
   "description": "Generate a HTML table of contents using cheerio.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/jonschlinkert/html-toc",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "contributors": [
