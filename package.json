@@ -4,6 +4,10 @@
   "version": "1.0.1",
   "homepage": "https://github.com/jonschlinkert/html-toc",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "contributors": [
+    "Jiabin Peng (https://blog.dgeibi.xyz)",
+    "Jon Schlinkert (http://twitter.com/jonschlinkert)"
+  ],
   "repository": "jonschlinkert/html-toc",
   "bugs": {
     "url": "https://github.com/jonschlinkert/html-toc/issues"
@@ -19,11 +23,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "keywords": [
-    "html",
-    "table of contents",
-    "toc"
-  ],
   "dependencies": {
     "cheerio": "^0.22.0",
     "escape-html": "^1.0.3",
@@ -31,10 +30,14 @@
     "markdown-slug": "^0.1.1"
   },
   "devDependencies": {
-    "gulp-format-md": "^0.1.11",
-    "js-beautify": "^1.6.11",
-    "mocha": "^3.2.0"
+    "gulp-format-md": "^0.1.12",
+    "mocha": "^3.4.1"
   },
+  "keywords": [
+    "html",
+    "table of contents",
+    "toc"
+  ],
   "verb": {
     "toc": false,
     "layout": "default",
@@ -46,9 +49,9 @@
     ],
     "related": {
       "list": [
-        "remarkable",
+        "breakdance",
         "markdown-toc",
-        "breakdance"
+        "remarkable"
       ]
     },
     "lint": {
