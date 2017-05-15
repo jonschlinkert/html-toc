@@ -19,12 +19,14 @@ module.exports = function(str, options) {
     addID: false,
     parentLink: true
   }, options);
+
   var $ = opts.$ || cheerio.load(str);
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
   var firstHeading = headings.first()[0];
   if (!firstHeading) return str;
+
   var base = +firstHeading.name.slice(1);
   var navigation = [];
   var slugs = {};
