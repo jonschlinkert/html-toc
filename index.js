@@ -20,7 +20,7 @@ module.exports = function(str, options) {
     parentLink: true
   }, options);
 
-  var $ = opts.$ || cheerio.load(str);
+  var $ = opts.$ || cheerio.load(str, options);
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
