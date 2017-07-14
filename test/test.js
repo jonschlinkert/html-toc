@@ -28,7 +28,7 @@ describe('html-toc', function() {
         cb(new Error('expected an error'));
       } catch (err) {
         assert(err);
-        assert.equal(err.message, 'expected a string');
+        assert.equal(err.message, 'Expected a String or Cheerio Instance');
         cb();
       }
     });
