@@ -17,7 +17,7 @@ module.exports = function(strOrObj, options) {
   }, options);
 
   var $;
-  if (strOrObj.prototype.cheerio && strOrObj.prototype.cheerio === "[cheerio object]" && strOrObj._root) {
+  if (strOrObj.prototype && strOrObj.prototype.cheerio && strOrObj.prototype.cheerio === "[cheerio object]" && strOrObj._root) {
     $ = strOrObj;
   } else if (opts.$) {
     $ = opts.$;
