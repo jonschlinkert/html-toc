@@ -5,11 +5,7 @@ var extend = require('extend-shallow');
 var slugify = require('markdown-slug');
 var escape = require('escape-html');
 
-module.exports = function(str, options) {
-  if (typeof str !== 'string') {
-    throw new TypeError('expected a string');
-  }
-
+module.exports = function(strOrObj, options) {
   var opts = extend({
     selectors: 'h1,h2',
     id: '#toc',
@@ -20,12 +16,21 @@ module.exports = function(str, options) {
     parentLink: true
   }, options);
 
-  var $ = opts.$ || cheerio.load(str, options);
+  var $;
+  if (strOrObj && strOrObj.prototype && strOrObj.prototype.cheerio && strOrObj.prototype.cheerio === "[cheerio object]" && strOrObj._root) {
+    $ = strOrObj;
+  } else if (opts.$) {
+    $ = opts.$;
+  } else if (typeof strOrObj === 'string') {
+    $ = cheerio.load(strOrObj, options);    
+  } else {
+    throw new TypeError('Expected a String or Cheerio Instance');
+  }
 
   // get all the anchor tags from inside the headers
   var headings = $(opts.selectors);
   var firstHeading = headings.first()[0];
-  if (!firstHeading) return str;
+  if (!firstHeading) return strOrObj;
 
   var base = +firstHeading.name.slice(1);
   var navigation = [];
@@ -85,8 +90,16 @@ module.exports = function(str, options) {
   }
 
   if (headings.length < opts.minLength) {
-    if (opts.addID) addID(navigation);
-    else return $.html();
+    if (opts.addID) {
+      addID(navigation);
+    }
+    else {
+      if (typeof strOrObj === 'string') {
+        return $.html();
+      } else {
+        return $;
+      }
+    }
   } else {
     $(opts.id).append(opts.header);
     $(opts.id).append(buildHTML(navigation, true));
@@ -104,7 +117,11 @@ module.exports = function(str, options) {
     }
   });
 
-  return $.html();
+  if (typeof strOrObj === 'string') {
+    return $.html();
+  } else {
+    return $;
+  }
 };
 
 function anchorTemplate(id, options) {
