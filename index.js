@@ -22,7 +22,7 @@ module.exports = function(strOrObj, options) {
   } else if (opts.$) {
     $ = opts.$;
   } else if (typeof strOrObj === 'string') {
-    $ = cheerio.load(strOrObj);    
+    $ = cheerio.load(strOrObj, options);    
   } else {
     throw new TypeError('Expected a String or Cheerio Instance');
   }
