@@ -73,7 +73,7 @@ Customize the template for creating anchors.
 ```js
 toc(str, {
   anchorTemplate: function(id) {
-    return `<a class="anchor" href="${id}" id="${id}"></a>`;
+    return `<a class="anchor" href="#${id}" id="${id}"></a>`;
   }
 });
 ```
